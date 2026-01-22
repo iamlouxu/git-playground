@@ -114,6 +114,24 @@ const Explainer: React.FC = () => {
                 </div>
             </div>
 
+            {/* New Section: Merge and Push */}
+            <div className="explainer-section grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div>
+                    <h2 className="text-3xl font-bold mb-4 text-pink-500">多重宇宙的交匯 (Git Merge)</h2>
+                    <p className="text-lg text-gray-700 leading-relaxed">
+                        分支 (Branch) 就像是平行時空。你在 <code className="bg-gray-100 px-2 py-1 rounded">feature</code> 分支開發新功能，這時候 <code className="bg-gray-100 px-2 py-1 rounded">main</code> 分支還是原來的樣子。<br /><br />
+                        當功能開發完成，你需要用 <span className="font-bold text-pink-600">git merge</span> 把這兩個時空合併起來！
+                    </p>
+                </div>
+                <div>
+                    <h2 className="text-3xl font-bold mb-4 text-sky-500">傳送到雲端 (Git Push)</h2>
+                    <p className="text-lg text-gray-700 leading-relaxed">
+                        你的電腦再安全，也可能壞掉。<span className="font-bold text-sky-600">Git Push</span> 就像是把你的遊戲存檔上傳到雲端伺服器 (如 GitHub)。<br /><br />
+                        這樣就算電腦爆炸，你的程式碼還活著！
+                    </p>
+                </div>
+            </div>
+
             {/* New Section: Common Commands Cheat Sheet */}
             <div className="explainer-section">
                 <h2 className="text-3xl font-bold mb-8 text-center text-green-600">常用指令小抄</h2>
@@ -123,6 +141,8 @@ const Explainer: React.FC = () => {
                         { cmd: 'git status', desc: '檢查現在檔案的狀態（看看哪裡不一樣）' },
                         { cmd: 'git add .', desc: '把所有修改過的檔案加入暫存區（準備存檔）' },
                         { cmd: 'git commit -m "msg"', desc: '提交並附上訊息（確認存檔）' },
+                        { cmd: 'git merge <branch>', desc: '合併分支（把平行時空接回來）' },
+                        { cmd: 'git push', desc: '上傳到遠端伺服器（雲端備份）' },
                         { cmd: 'git log', desc: '查看過去的提交紀錄（讀取存檔紀錄）' },
                     ].map((item, idx) => (
                         <div key={idx} className="flex flex-col border-b border-gray-700 pb-4 last:border-0 last:pb-0">
