@@ -2,6 +2,9 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import gitRpgSave from '../assets/git_rpg_save_1769052499382.png';
+import gitCollaboration from '../assets/git_collaboration_1769052517500.png';
+import gitStagesFlow from '../assets/git_stages_flow_1769052534770.png';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -44,9 +47,11 @@ const Explainer: React.FC = () => {
                     </p>
                 </div>
                 <div className="flex-1 flex justify-center">
-                    <div className="w-64 h-64 bg-orange-100 rounded-full flex items-center justify-center border-4 border-orange-200 shadow-xl text-6xl">
-                        💾
-                    </div>
+                    <img
+                        src={gitRpgSave}
+                        alt="Git RPG Save Point"
+                        className="w-full max-w-sm rounded-xl shadow-2xl border-4 border-orange-500/30 hover:scale-105 transition-transform duration-500"
+                    />
                 </div>
             </div>
 
@@ -63,18 +68,26 @@ const Explainer: React.FC = () => {
                     </p>
                 </div>
                 <div className="flex-1 flex justify-center">
-                    <div className="w-64 h-64 bg-blue-100 rounded-full flex items-center justify-center border-4 border-blue-200 shadow-xl text-6xl">
-                        🤝
-                    </div>
+                    <img
+                        src={gitCollaboration}
+                        alt="Git Collaboration"
+                        className="w-full max-w-sm rounded-xl shadow-2xl border-4 border-blue-500/30 hover:scale-105 transition-transform duration-500"
+                    />
                 </div>
             </div>
 
             {/* New Section: The 3 Stages of Git */}
             <div className="explainer-section">
                 <h2 className="text-3xl font-bold mb-8 text-center text-purple-600">Git 的三個重要階段</h2>
+                <div className="flex justify-center mb-8">
+                    <img
+                        src={gitStagesFlow}
+                        alt="Git 3 Stages Flow"
+                        className="w-full max-w-4xl rounded-xl shadow-2xl border border-gray-700"
+                    />
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
                     <div className="bg-white p-6 rounded-xl shadow-lg border-2 border-gray-100 transform hover:-translate-y-2 transition-transform">
-                        <div className="text-4xl mb-4">📝</div>
                         <h3 className="text-xl font-bold mb-2 text-gray-800">工作目錄</h3>
                         <p className="text-sm text-gray-500 mb-2 font-mono">Working Directory</p>
                         <p className="text-gray-600">
@@ -83,7 +96,6 @@ const Explainer: React.FC = () => {
                         <div className="mt-4 text-purple-600 font-bold">git add ↓</div>
                     </div>
                     <div className="bg-white p-6 rounded-xl shadow-lg border-2 border-purple-100 transform hover:-translate-y-2 transition-transform">
-                        <div className="text-4xl mb-4">📦</div>
                         <h3 className="text-xl font-bold mb-2 text-gray-800">暫存區</h3>
                         <p className="text-sm text-gray-500 mb-2 font-mono">Staging Area</p>
                         <p className="text-gray-600">
@@ -93,7 +105,6 @@ const Explainer: React.FC = () => {
                     </div>
                     <div className="bg-white p-6 rounded-xl shadow-lg border-2 border-purple-500 transform hover:-translate-y-2 transition-transform relative overflow-hidden">
                         <div className="absolute top-0 right-0 bg-purple-500 text-white text-xs px-2 py-1 rounded-bl">Safe!</div>
-                        <div className="text-4xl mb-4">📚</div>
                         <h3 className="text-xl font-bold mb-2 text-gray-800">儲存庫</h3>
                         <p className="text-sm text-gray-500 mb-2 font-mono">Repository (.git)</p>
                         <p className="text-gray-600">
