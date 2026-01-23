@@ -8,18 +8,27 @@ export type TerminalLine = {
     content: string;
 };
 
-export type FileStatus = 'untracked' | 'modified' | 'staged' | 'committed';
+export type FileStatus = 'untracked' | 'modified' | 'staged' | 'committed' | 'conflicted';
 
 export type SimFile = {
     name: string;
     status: FileStatus;
+    content: string;
+};
+
+export type Commit = {
+    id: string;
+    message: string;
+    branch: string; // 'main' | 'feature' | etc.
+    parentId: string | null;
+    timestamp: number;
 };
 
 export type GitState = {
     repoInitialized: boolean;
     files: SimFile[];
-    commitHistory: string[];
-    remoteCommits: string[];
+    commitHistory: Commit[];
+    remoteCommits: Commit[];
 };
 
 export type Quest = {
@@ -31,9 +40,9 @@ export type Quest = {
 };
 
 const INITIAL_FILES: SimFile[] = [
-    { name: 'index.html', status: 'untracked' },
-    { name: 'style.css', status: 'untracked' },
-    { name: 'script.js', status: 'untracked' },
+    { name: 'index.html', status: 'untracked', content: '<h1>Hello World</h1>\n<p>Welcome to my project!</p>' },
+    { name: 'style.css', status: 'untracked', content: 'body {\n    background-color: #f0f0f0;\n    font-family: sans-serif;\n}' },
+    { name: 'script.js', status: 'untracked', content: 'console.log("Project initialized");' },
 ];
 
 const QUESTS: Quest[] = [
@@ -77,6 +86,20 @@ const QUESTS: Quest[] = [
         title: '任務 6：推送到雲端',
         description: '將你的變更推送到遠端伺服器！',
         check: (state, _) => state.remoteCommits.length > 0,
+        completed: false
+    },
+    {
+        id: 'remote-quest',
+        title: '任務 7：團隊協作 (Pull)',
+        description: '隊友剛推了新程式碼 (Origin is ahead)。執行 git pull 來同步！',
+        check: (state, lastCmd) => lastCmd === 'git pull' && state.commitHistory.length === state.remoteCommits.length,
+        completed: false
+    },
+    {
+        id: 'conflict-quest',
+        title: '任務 8：解決衝突 (Conflict)',
+        description: '再次合併 Feature 分支會有衝突。執行 git merge feature，解決衝突後提交。',
+        check: (state, _) => state.files.some(f => f.status === 'committed' && f.name === 'style.css') && state.commitHistory.some(c => c.message.includes('Merge')),
         completed: false
     }
 ];
@@ -148,10 +171,18 @@ export const useGitSim = () => {
                         const untracked = gitState.files.filter(f => f.status === 'untracked');
                         const staged = gitState.files.filter(f => f.status === 'staged');
                         const modified = gitState.files.filter(f => f.status === 'modified');
+                        const conflicted = gitState.files.filter(f => f.status === 'conflicted');
 
-                        if (untracked.length === 0 && staged.length === 0 && modified.length === 0) {
+
+                        if (untracked.length === 0 && staged.length === 0 && modified.length === 0 && conflicted.length === 0) {
                             addToHistory('output', 'nothing to commit, working tree clean');
                         } else {
+                            if (conflicted.length > 0) {
+                                addToHistory('error', 'You have unmerged paths.');
+                                addToHistory('error', '  (fix conflicts and run "git commit")');
+                                addToHistory('output', 'Unmerged paths:');
+                                conflicted.forEach(f => addToHistory('error', `  both modified:   ${f.name}`));
+                            }
                             if (staged.length > 0) {
                                 addToHistory('output', 'Changes to be committed:');
                                 staged.forEach(f => addToHistory('success', `  new file:   ${f.name}`));
@@ -173,7 +204,7 @@ export const useGitSim = () => {
                     } else {
                         if (args[0] === '.') {
                             nextGitState.files = nextGitState.files.map(f =>
-                                f.status === 'untracked' || f.status === 'modified' ? { ...f, status: 'staged' } : f
+                                f.status === 'untracked' || f.status === 'modified' || f.status === 'conflicted' ? { ...f, status: 'staged' } : f
                             );
                         } else {
                             const fileName = args[0];
@@ -197,13 +228,25 @@ export const useGitSim = () => {
                         } else {
                             const message = parts.slice(mIndex + 1).join(' ').replace(/^"(.*)"$/, '$1').replace(/^'(.*)'$/, '$1');
                             const hasStaged = gitState.files.some(f => f.status === 'staged');
-                            if (!hasStaged) {
+                            const hasConflicts = gitState.files.some(f => f.status === 'conflicted');
+
+                            if (hasConflicts) {
+                                addToHistory('error', 'fatal: You have not concluded your merge (MERGE_HEAD exists).');
+                                addToHistory('error', '  (fix conflicts and then run "git commit")');
+                            } else if (!hasStaged) {
                                 addToHistory('output', 'On branch main');
                                 addToHistory('output', 'nothing to commit, working tree clean');
                             } else {
                                 nextGitState.files = nextGitState.files.map(f => f.status === 'staged' ? { ...f, status: 'committed' } : f);
-                                nextGitState.commitHistory = [...nextGitState.commitHistory, message];
-                                addToHistory('output', `[main ${Math.random().toString(16).substr(2, 7)}] ${message}`);
+                                const newCommit: Commit = {
+                                    id: Math.random().toString(16).substr(2, 7),
+                                    message: message,
+                                    branch: 'main',
+                                    parentId: nextGitState.commitHistory.length > 0 ? nextGitState.commitHistory[nextGitState.commitHistory.length - 1].id : null,
+                                    timestamp: Date.now()
+                                };
+                                nextGitState.commitHistory = [...nextGitState.commitHistory, newCommit];
+                                addToHistory('output', `[main ${newCommit.id}] ${message}`);
                                 addToHistory('output', ` ${gitState.files.filter(f => f.status === 'staged').length} files changed`);
                             }
                         }
@@ -212,17 +255,70 @@ export const useGitSim = () => {
 
                 case 'merge':
                     if (!gitState.repoInitialized) {
-                        addToHistory('error', 'fatal: not a git repository');
+                        addToHistory('error', 'fatal: not a git repository (or any of the parent directories): .git');
                     } else if (args[0] !== 'feature') {
                         addToHistory('error', `merge: ${args[0]} - not something we can merge (try 'feature')`);
                     } else {
-                        addToHistory('output', 'Updating 34ac2..98fa2');
-                        addToHistory('output', 'Fast-forward');
-                        addToHistory('success', ' feature.js | 20 ++++++++++++++++++++');
-                        addToHistory('success', ' 1 file changed, 20 insertions(+)');
-                        addToHistory('success', ' create mode 100644 feature.js');
-                        nextGitState.files = [...nextGitState.files, { name: 'feature.js', status: 'committed' }];
-                        nextGitState.commitHistory = [...nextGitState.commitHistory, "Merge branch 'feature'"];
+                        // CONFLICT SCENARIO CHECK (Scripted for educational purpose)
+                        // If we are in a state where a conflict is expected (e.g., both branches touched 'style.css')
+                        const currentQuest = QUESTS[currentQuestIndex]; // Get current quest to check for conflict-quest
+                        const hasConflict = currentQuest && currentQuest.id === 'conflict-quest'; // We will add this quest ID later
+
+                        if (hasConflict) {
+                            addToHistory('info', 'Auto-merging style.css');
+                            addToHistory('error', 'CONFLICT (content): Merge conflict in style.css');
+                            addToHistory('error', 'Automatic merge failed; fix conflicts and then commit the result.');
+
+                            nextGitState.files = nextGitState.files.map(f =>
+                                f.name === 'style.css'
+                                    ? {
+                                        ...f,
+                                        status: 'conflicted',
+                                        content: `body {\n<<<<<<< HEAD\n    background-color: #f0f0f0;\n=======\n    background-color: #000000;\n>>>>>>> feature\n    font-family: sans-serif;\n}`
+                                    }
+                                    : f
+                            );
+                        } else {
+                            // Normal Merge
+                            addToHistory('success', 'Updating ' + (gitState.commitHistory[gitState.commitHistory.length - 1]?.id || '0000').substr(0, 7) + '..HEAD');
+                            addToHistory('success', 'Fast-forward');
+
+                            // Simulate file changes from feature branch
+                            addToHistory('success', ' feature.js | 20 ++++++++++++++++++++');
+                            addToHistory('success', ' 1 file changed, 20 insertions(+)');
+                            addToHistory('success', ' create mode 100644 feature.js');
+
+                            // Check if feature.js already exists to avoid duplication if running multiple times
+                            if (!nextGitState.files.find(f => f.name === 'feature.js')) {
+                                nextGitState.files = [...nextGitState.files, { name: 'feature.js', status: 'committed', content: 'console.log("Feature A implemented");' }];
+                            }
+
+                            const mergeCommit: Commit = {
+                                id: Math.random().toString(16).substr(2, 7),
+                                message: "Merge branch 'feature'",
+                                branch: 'main',
+                                parentId: nextGitState.commitHistory[nextGitState.commitHistory.length - 1].id,
+                                timestamp: Date.now()
+                            };
+                            nextGitState.commitHistory = [...nextGitState.commitHistory, mergeCommit];
+                        }
+                    }
+                    break;
+
+                case 'pull':
+                    if (!gitState.repoInitialized) {
+                        addToHistory('error', 'fatal: not a git repository (or any of the parent directories): .git');
+                    } else {
+                        // Simulate pulling from remote
+                        if (gitState.remoteCommits.length > gitState.commitHistory.length) {
+                            const newCommits = gitState.remoteCommits.slice(gitState.commitHistory.length);
+                            nextGitState.commitHistory = [...gitState.commitHistory, ...newCommits];
+                            addToHistory('success', `Updating ${gitState.commitHistory[gitState.commitHistory.length - 1]?.id.substr(0, 7)}..${newCommits[newCommits.length - 1].id.substr(0, 7)}`);
+                            addToHistory('success', 'Fast-forward');
+                            addToHistory('info', `${newCommits.length} commits pulled from origin/main`);
+                        } else {
+                            addToHistory('info', 'Already up to date.');
+                        }
                     }
                     break;
 
@@ -261,7 +357,7 @@ export const useGitSim = () => {
         // Quest Check - Use nextGitState!
         if (currentQuestIndex < QUESTS.length) {
             const quest = QUESTS[currentQuestIndex];
-            if (quest.check(nextGitState, `${mainCommand} ${subCommand}`)) {
+            if (quest.check(nextGitState, cmd.trim())) {
                 setShowQuestCelebration(true);
                 addToHistory('success', `🎉 任務完成：${quest.title}`);
                 if (currentQuestIndex < QUESTS.length - 1) {
@@ -273,6 +369,28 @@ export const useGitSim = () => {
             }
         }
     }, [gitState, currentQuestIndex]);
+
+    useEffect(() => {
+        const quest = QUESTS[currentQuestIndex];
+        if (quest && quest.id === 'remote-quest') {
+            // Simulate remote being ahead
+            if (gitState.remoteCommits.length <= gitState.commitHistory.length) {
+                const newCommit: Commit = {
+                    id: Math.random().toString(16).substr(2, 7),
+                    message: "Teammate's update",
+                    branch: 'main',
+                    parentId: gitState.remoteCommits[gitState.remoteCommits.length - 1]?.id || null,
+                    timestamp: Date.now()
+                };
+                setGitState(prev => ({
+                    ...prev,
+                    remoteCommits: [...prev.remoteCommits, newCommit]
+                }));
+                // Notify user
+                setHistory(prev => [...prev, { id: Date.now().toString(), type: 'info', content: 'Simulation: Remote repository has new commits!' }]);
+            }
+        }
+    }, [currentQuestIndex, gitState.remoteCommits.length, gitState.commitHistory.length]);
 
     const clearHistory = () => setHistory([]);
     const resetSimulation = () => {

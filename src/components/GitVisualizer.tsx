@@ -8,6 +8,7 @@ import {
     ArrowRight,
     Cloud
 } from 'lucide-react';
+import FileContentModal from './FileContentModal';
 
 interface GitVisualizerProps {
     gitState: GitState;
@@ -17,6 +18,14 @@ const GitVisualizer: React.FC<GitVisualizerProps> = ({ gitState }) => {
     const workingDirRef = useRef<HTMLDivElement>(null);
     const stagingAreaRef = useRef<HTMLDivElement>(null);
     const repoRef = useRef<HTMLDivElement>(null);
+
+    const [selectedFile, setSelectedFile] = React.useState<{ name: string, content: string, status: string } | null>(null);
+    const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+    const handleFileClick = (file: { name: string, content: string, status: string }) => {
+        setSelectedFile(file);
+        setIsModalOpen(true);
+    };
 
     // Helper to get files for each stage
     const untracked = gitState.files.filter(f => f.status === 'untracked' || f.status === 'modified');
@@ -58,7 +67,11 @@ const GitVisualizer: React.FC<GitVisualizerProps> = ({ gitState }) => {
                             <div className="text-gray-600 text-sm text-center italic mt-4">乾淨！</div>
                         ) : (
                             untracked.map(f => (
-                                <div key={f.name} className="file-card bg-red-900/40 border border-red-500/50 text-red-200 px-3 py-2 rounded flex items-center space-x-2">
+                                <div
+                                    key={f.name}
+                                    onClick={() => handleFileClick(f)}
+                                    className="file-card bg-red-900/40 border border-red-500/50 text-red-200 px-3 py-2 rounded flex items-center space-x-2 cursor-pointer hover:bg-red-900/60 transition-colors"
+                                >
                                     <File className="w-4 h-4" />
                                     <span>{f.name}</span>
                                 </div>
@@ -80,7 +93,11 @@ const GitVisualizer: React.FC<GitVisualizerProps> = ({ gitState }) => {
                             <div className="text-gray-600 text-sm text-center italic mt-4">空的</div>
                         ) : (
                             staged.map(f => (
-                                <div key={f.name} className="file-card bg-green-900/40 border border-green-500/50 text-green-200 px-3 py-2 rounded flex items-center space-x-2">
+                                <div
+                                    key={f.name}
+                                    onClick={() => handleFileClick(f)}
+                                    className="file-card bg-green-900/40 border border-green-500/50 text-green-200 px-3 py-2 rounded flex items-center space-x-2 cursor-pointer hover:bg-green-900/60 transition-colors"
+                                >
                                     <FileCheck className="w-4 h-4" />
                                     <span>{f.name}</span>
                                 </div>
@@ -90,28 +107,78 @@ const GitVisualizer: React.FC<GitVisualizerProps> = ({ gitState }) => {
                 </div>
 
                 {/* Repository */}
-                <div ref={repoRef} className="bg-gray-800 rounded-lg p-4 border-2 border-solid border-blue-500/50 relative z-10 min-h-[160px]">
+                {/* Repository (Graph View) */}
+                <div ref={repoRef} className="bg-gray-800 rounded-lg p-4 border-2 border-solid border-blue-500/50 relative z-10 min-h-[160px] overflow-hidden">
                     <div className="text-blue-400 font-bold mb-3 flex items-center justify-between">
-                        <span>儲存庫 (Commits)</span>
+                        <span>儲存庫 (Graph)</span>
                         <span className="text-xs bg-blue-900/50 px-2 py-1 rounded">HEAD</span>
                     </div>
-                    <div className="space-y-2 max-h-[140px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-gray-600">
-                        {!gitState.repoInitialized ? (
-                            <div className="text-gray-600 text-sm text-center mt-8">...</div>
-                        ) : committed.length === 0 ? (
-                            <div className="text-gray-600 text-sm text-center italic mt-4">尚無提交</div>
-                        ) : (
-                            [...committed].reverse().map((msg, i) => (
-                                <div key={i} className="file-card bg-blue-900/40 border border-blue-500/50 text-blue-200 px-3 py-2 rounded flex flex-col">
-                                    <div className="flex items-center space-x-2 text-xs text-blue-300 border-b border-blue-500/30 pb-1 mb-1">
-                                        <span className="font-mono">o-{Math.random().toString(16).substr(2, 6)}</span>
-                                        <span>• {new Date().toLocaleTimeString()}</span>
-                                    </div>
-                                    <span className="truncate" title={msg}>{msg}</span>
-                                </div>
-                            ))
-                        )}
-                    </div>
+
+                    {!gitState.repoInitialized ? (
+                        <div className="text-gray-600 text-sm text-center mt-8">...</div>
+                    ) : committed.length === 0 ? (
+                        <div className="text-gray-600 text-sm text-center italic mt-4">尚無提交</div>
+                    ) : (
+                        <div className="relative w-full h-[140px] overflow-x-auto scrollbar-thin scrollbar-thumb-gray-600">
+                            <svg className="min-w-full h-full">
+                                <defs>
+                                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                        <polygon points="0 0, 10 3.5, 0 7" fill="#60a5fa" />
+                                    </marker>
+                                </defs>
+                                {committed.map((commit, i) => {
+                                    // Simple layout logic
+                                    const x = 30 + i * 60;
+                                    const y = commit.branch === 'main' ? 50 : 90;
+
+                                    // Find parent to draw line
+                                    let parentX = 0;
+                                    let parentY = 0;
+                                    let hasParent = false;
+
+                                    if (commit.parentId) {
+                                        // Better: find by ID in real graph, but here indices roughly match
+                                        const parent = committed.find(c => c.id === commit.parentId);
+                                        if (parent) {
+                                            const pIndex = committed.findIndex(c => c.id === parent.id);
+                                            parentX = 30 + pIndex * 60;
+                                            parentY = parent.branch === 'main' ? 50 : 90;
+                                            hasParent = true;
+                                        }
+                                    }
+
+                                    return (
+                                        <g key={commit.id} className="group cursor-pointer">
+                                            {hasParent && (
+                                                <line
+                                                    x1={parentX} y1={parentY}
+                                                    x2={x} y2={y}
+                                                    stroke="#60a5fa"
+                                                    strokeWidth="2"
+                                                    markerEnd="url(#arrowhead)"
+                                                    className="opacity-50"
+                                                />
+                                            )}
+                                            <circle
+                                                cx={x} cy={y}
+                                                r="6"
+                                                fill={commit.branch === 'main' ? '#3b82f6' : '#ec4899'}
+                                                className="transition-all duration-300 group-hover:r-8"
+                                            />
+                                            <text x={x} y={y + 20} textAnchor="middle" fill="#9ca3af" fontSize="10" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                                                {commit.id.substr(0, 4)}
+                                            </text>
+                                            <foreignObject x={x - 60} y={y - 50} width="120" height="40" className="opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                                <div className="bg-gray-900 text-white text-xs p-1 rounded border border-gray-600 text-center truncate">
+                                                    {commit.message}
+                                                </div>
+                                            </foreignObject>
+                                        </g>
+                                    );
+                                })}
+                            </svg>
+                        </div>
+                    )}
                 </div>
 
                 {/* Remote Repository */}
@@ -129,13 +196,13 @@ const GitVisualizer: React.FC<GitVisualizerProps> = ({ gitState }) => {
                         ) : remote.length === 0 ? (
                             <div className="text-gray-600 text-sm text-center italic mt-4">雲端空空如也</div>
                         ) : (
-                            [...remote].reverse().map((msg, i) => (
-                                <div key={i} className="file-card bg-sky-900/40 border border-sky-500/50 text-sky-200 px-3 py-2 rounded flex flex-col">
+                            [...remote].reverse().map((commit) => (
+                                <div key={commit.id} className="file-card bg-sky-900/40 border border-sky-500/50 text-sky-200 px-3 py-2 rounded flex flex-col">
                                     <div className="flex items-center space-x-2 text-xs text-sky-300 border-b border-sky-500/30 pb-1 mb-1">
                                         <span className="font-mono">origin</span>
                                         <span>• Synced</span>
                                     </div>
-                                    <span className="truncate" title={msg}>{msg}</span>
+                                    <span className="truncate" title={commit.message}>{commit.message}</span>
                                 </div>
                             ))
                         )}
@@ -147,6 +214,15 @@ const GitVisualizer: React.FC<GitVisualizerProps> = ({ gitState }) => {
                     </div>
                 </div>
             </div>
+            {selectedFile && (
+                <FileContentModal
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    fileName={selectedFile.name}
+                    content={selectedFile.content}
+                    status={selectedFile.status}
+                />
+            )}
         </div>
     );
 };

@@ -35,6 +35,15 @@ const Terminal: React.FC = () => {
         }
     };
 
+    const suggestions = [
+        { label: 'git status', cmd: 'git status' },
+        { label: 'git add .', cmd: 'git add .' },
+        { label: 'git commit', cmd: 'git commit -m "update"' },
+        { label: 'git merge', cmd: 'git merge feature' },
+        { label: 'git push', cmd: 'git push' },
+        { label: 'clear', cmd: 'clear' },
+    ];
+
     return (
         <div className="w-full max-w-6xl mx-auto my-8 font-mono text-sm sm:text-base">
 
@@ -107,6 +116,24 @@ const Terminal: React.FC = () => {
                         placeholder={completedAllQuests ? "You're free to explore..." : "Follow the quest instructions..."}
                     />
                 </div>
+            </div>
+
+            {/* Suggested Commands */}
+            <div className="flex flex-wrap gap-2 mb-2 px-2">
+                <span className="text-gray-500 text-xs flex items-center mr-2">💡 快速指令:</span>
+                {suggestions.map((s) => (
+                    <button
+                        key={s.label}
+                        onClick={() => {
+                            setInputValue(s.cmd);
+                            // Optional: focus input
+                            document.querySelector<HTMLInputElement>('input')?.focus();
+                        }}
+                        className="text-xs bg-gray-800 hover:bg-gray-700 text-cyan-400 px-2 py-1 rounded border border-gray-700 transition-colors cursor-pointer"
+                    >
+                        {s.label}
+                    </button>
+                ))}
             </div>
 
             <div className="flex justify-end mt-2">
