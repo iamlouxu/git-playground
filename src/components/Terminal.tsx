@@ -11,7 +11,10 @@ const Terminal: React.FC = () => {
     const bottomRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+        // Only auto-scroll if user has interacted (history length > 1)
+        if (history.length > 1) {
+            bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }
     }, [history]);
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -72,7 +75,9 @@ const Terminal: React.FC = () => {
                     <div className="w-10"></div>{/* Spacer */}
                 </div>
 
-                <div className="h-96 overflow-y-auto p-4 space-y-1 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent bg-gray-900/95">
+                <div
+                    className="h-96 overflow-y-auto p-4 space-y-1 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent bg-gray-900/95"
+                >
                     {history.map((line) => (
                         <div key={line.id} className={`${getLineColor(line.type)} break-words leading-relaxed`}>
                             {line.type === 'input' ? (
@@ -100,7 +105,6 @@ const Terminal: React.FC = () => {
                         onKeyDown={handleKeyDown}
                         className="flex-1 bg-transparent border-none outline-none text-yellow-400 placeholder-gray-700"
                         placeholder={completedAllQuests ? "You're free to explore..." : "Follow the quest instructions..."}
-                        autoFocus
                     />
                 </div>
             </div>
