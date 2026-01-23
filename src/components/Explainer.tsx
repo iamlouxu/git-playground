@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import gitRpgSave from '../assets/git_rpg_save_1769052499382.png';
 import gitCollaboration from '../assets/git_collaboration_1769052517500.png';
 import gitStagesFlow from '../assets/git_stages_flow_1769052534770.png';
+import gitFlowNeon from '../assets/git_flow_neon.png';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -129,6 +130,49 @@ const Explainer: React.FC = () => {
                         你的電腦再安全，也可能壞掉。<span className="font-bold text-sky-600">Git Push</span> 就像是把你的遊戲存檔上傳到雲端伺服器 (如 GitHub)。<br /><br />
                         這樣就算電腦爆炸，你的程式碼還活著！
                     </p>
+                </div>
+            </div>
+
+            {/* New Section: Git Flow */}
+            <div className="explainer-section">
+                <h2 className="text-3xl font-bold mb-8 text-center text-cyan-500">進階：Git Flow 工作流</h2>
+                <div className="flex justify-center mb-12">
+                    <img
+                        src={gitFlowNeon}
+                        alt="Git Flow Visualization"
+                        className="w-full max-w-4xl rounded-xl shadow-2xl border border-gray-700"
+                    />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="bg-gray-800/50 p-6 rounded-xl border-t-4 border-blue-500 hover:bg-gray-800 transition-colors">
+                        <h3 className="text-xl font-bold mb-2 text-blue-400">Main</h3>
+                        <p className="text-sm text-gray-400">Production Ready</p>
+                        <p className="text-gray-300 mt-3 text-sm">
+                            永遠處於穩定狀態，隨時可以發佈給使用者的版本。神聖不可侵犯！
+                        </p>
+                    </div>
+                    <div className="bg-gray-800/50 p-6 rounded-xl border-t-4 border-purple-500 hover:bg-gray-800 transition-colors">
+                        <h3 className="text-xl font-bold mb-2 text-purple-400">Develop</h3>
+                        <p className="text-sm text-gray-400">Integration Branch</p>
+                        <p className="text-gray-300 mt-3 text-sm">
+                            開發主幹線。所有新功能做完後都會合併到這裡，準備下一次的發佈。
+                        </p>
+                    </div>
+                    <div className="bg-gray-800/50 p-6 rounded-xl border-t-4 border-pink-500 hover:bg-gray-800 transition-colors">
+                        <h3 className="text-xl font-bold mb-2 text-pink-400">Feature</h3>
+                        <p className="text-sm text-gray-400">New Stuff</p>
+                        <p className="text-gray-300 mt-3 text-sm">
+                            從 Develop 分出來。開發新功能專用，做完後再合併回 Develop。
+                        </p>
+                    </div>
+                    <div className="bg-gray-800/50 p-6 rounded-xl border-t-4 border-red-500 hover:bg-gray-800 transition-colors">
+                        <h3 className="text-xl font-bold mb-2 text-red-500">Hotfix</h3>
+                        <p className="text-sm text-gray-400">Emergency!</p>
+                        <p className="text-gray-300 mt-3 text-sm">
+                            緊急修復！直接從 Main 分出來修 Bug，修完後同時合回 Main 和 Develop。
+                        </p>
+                    </div>
                 </div>
             </div>
 
