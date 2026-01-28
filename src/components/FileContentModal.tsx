@@ -25,53 +25,53 @@ const FileContentModal: React.FC<FileContentModalProps> = ({ isOpen, onClose, fi
     // Determine header color based on status
     const getStatusColor = () => {
         switch (status) {
-            case 'untracked': return 'text-red-400 border-red-500/50';
-            case 'modified': return 'text-yellow-400 border-yellow-500/50';
-            case 'staged': return 'text-green-400 border-green-500/50';
-            case 'committed': return 'text-blue-400 border-blue-500/50';
-            default: return 'text-gray-400 border-gray-500/50';
+            case 'untracked': return 'text-system-red border-system-red/30';
+            case 'modified': return 'text-yellow-400 border-yellow-500/30';
+            case 'staged': return 'text-terminal-green border-terminal-green/30';
+            case 'committed': return 'text-electric-blue border-electric-blue/30';
+            default: return 'text-ghost border-white/10';
         }
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-gray-900 w-full max-w-2xl rounded-xl border border-gray-700 shadow-2xl overflow-hidden transform transition-all scale-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-deep-void/80 backdrop-blur-md animate-in fade-in duration-200">
+            <div className="glass-panel w-full max-w-2xl rounded-xl border border-white/10 shadow-2xl shadow-black/50 overflow-hidden transform transition-all scale-100 bg-holodeck">
                 {/* Header */}
-                <div className={`p-4 border-b flex justify-between items-center bg-gray-800/50 ${getStatusColor()}`}>
+                <div className={`p-4 border-b flex justify-between items-center bg-white/5 ${getStatusColor()}`}>
                     <div className="flex items-center gap-2">
                         <FileText className="w-5 h-5" />
                         <span className="font-mono font-bold text-lg">{fileName}</span>
-                        <span className="text-xs px-2 py-0.5 rounded-full border bg-black/30 opacity-80 uppercase ml-2">
+                        <span className="text-xs px-2 py-0.5 rounded border bg-black/30 opacity-80 uppercase ml-2 font-mono">
                             {status}
                         </span>
                     </div>
                     <button
                         onClick={onClose}
-                        className="text-gray-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-gray-700"
+                        className="text-ghost hover:text-starlight transition-colors p-1 rounded-lg hover:bg-white/10"
                     >
                         <X className="w-6 h-6" />
                     </button>
                 </div>
 
                 {/* Content */}
-                <div className="p-0 overflow-auto max-h-[60vh] bg-[#1e1e1e]">
+                <div className="p-0 overflow-auto max-h-[60vh] bg-black/40">
                     <div className="flex">
                         {/* Line Numbers */}
-                        <div className="bg-[#2d2d2d] text-gray-500 text-right pr-3 pl-2 py-4 select-none font-mono text-sm border-r border-gray-700">
+                        <div className="bg-black/20 text-ghost/50 text-right pr-3 pl-2 py-4 select-none font-mono text-sm border-r border-white/5">
                             {content.split('\n').map((_, i) => (
                                 <div key={i} className="leading-6">{i + 1}</div>
                             ))}
                         </div>
 
                         {/* Source Code */}
-                        <pre className="p-4 font-mono text-sm text-gray-300 leading-6 bg-transparent w-full overflow-x-auto">
+                        <pre className="p-4 font-mono text-sm text-starlight leading-6 bg-transparent w-full overflow-x-auto">
                             <code>{content}</code>
                         </pre>
                     </div>
                 </div>
 
                 {/* Footer */}
-                <div className="p-3 bg-gray-800 border-t border-gray-700 text-xs text-gray-400 flex justify-between">
+                <div className="p-3 bg-holodeck border-t border-white/5 text-xs text-ghost flex justify-between font-mono">
                     <span>{content.length} characters</span>
                     <span>UTF-8</span>
                 </div>

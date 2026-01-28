@@ -27,11 +27,11 @@ const Terminal: React.FC = () => {
     const getLineColor = (type: TerminalLine['type']) => {
         switch (type) {
             case 'input': return 'text-yellow-400';
-            case 'output': return 'text-gray-300';
-            case 'error': return 'text-red-400';
-            case 'success': return 'text-green-400';
-            case 'info': return 'text-blue-300';
-            default: return 'text-white';
+            case 'output': return 'text-ghost';
+            case 'error': return 'text-system-red';
+            case 'success': return 'text-terminal-green';
+            case 'info': return 'text-electric-blue';
+            default: return 'text-starlight';
         }
     };
 
@@ -51,46 +51,46 @@ const Terminal: React.FC = () => {
             <GitVisualizer gitState={gitState} />
 
             {/* Quest Header */}
-            <div className="bg-gradient-to-r from-purple-900/80 to-blue-900/80 p-4 rounded-t-lg border-t border-l border-r border-gray-700 flex justify-between items-center backdrop-blur">
+            <div className="bg-gradient-to-r from-cyber-purple/20 to-electric-blue/20 p-4 rounded-t-lg border-t border-l border-r border-white/10 flex justify-between items-center backdrop-blur">
                 <div>
                     {!completedAllQuests ? (
                         <>
                             <div className="text-xs text-yellow-400 font-bold uppercase tracking-wider mb-1">Current Quest</div>
-                            <div className="text-white font-bold text-lg">{currentQuest.title}</div>
-                            <div className="text-gray-300 text-sm">{currentQuest.description}</div>
+                            <div className="text-starlight font-bold text-lg font-display">{currentQuest.title}</div>
+                            <div className="text-ghost text-sm">{currentQuest.description}</div>
                         </>
                     ) : (
-                        <div className="text-green-400 font-bold text-lg flex items-center gap-2">
+                        <div className="text-terminal-green font-bold text-lg flex items-center gap-2 font-display">
                             <CheckCircle2 className="w-5 h-5" /> All Systems Operational! You are a Git Master.
                         </div>
                     )}
                 </div>
                 <div className="hidden md:block">
-                    <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center text-2xl">
-                        {completedAllQuests ? <CheckCircle2 className="w-8 h-8 text-green-400" /> : <TerminalIcon className="w-8 h-8 text-white" />}
+                    <div className="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center text-2xl border border-white/10">
+                        {completedAllQuests ? <CheckCircle2 className="w-8 h-8 text-terminal-green" /> : <TerminalIcon className="w-8 h-8 text-starlight" />}
                     </div>
                 </div>
             </div>
 
             {/* Terminal Window */}
-            <div className="bg-gray-900 rounded-b-lg shadow-2xl border border-gray-700 overflow-hidden">
-                <div className="flex items-center justify-between p-2 bg-gray-800 border-b border-gray-700">
+            <div className="bg-holodeck rounded-b-lg shadow-2xl shadow-black/50 border border-white/10 overflow-hidden">
+                <div className="flex items-center justify-between p-2 bg-black/20 border-b border-white/5">
                     <div className="flex space-x-2 pl-2">
-                        <div className="w-3 h-3 rounded-full bg-red-500 hover:bg-red-600 cursor-pointer transition-colors"></div>
+                        <div className="w-3 h-3 rounded-full bg-system-red hover:bg-red-600 cursor-pointer transition-colors"></div>
                         <div className="w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-600 cursor-pointer transition-colors"></div>
-                        <div className="w-3 h-3 rounded-full bg-green-500 hover:bg-green-600 cursor-pointer transition-colors"></div>
+                        <div className="w-3 h-3 rounded-full bg-terminal-green hover:bg-green-600 cursor-pointer transition-colors"></div>
                     </div>
-                    <div className="text-gray-500 text-xs select-none">git-playground — -zsh — 80x24</div>
+                    <div className="text-ghost text-xs select-none font-mono">git-playground — -zsh — 80x24</div>
                     <div className="w-10"></div>{/* Spacer */}
                 </div>
 
                 <div
-                    className="h-96 overflow-y-auto p-4 space-y-1 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent bg-gray-900/95"
+                    className="h-96 overflow-y-auto p-4 space-y-1 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent bg-holodeck/95"
                 >
                     {history.map((line) => (
                         <div key={line.id} className={`${getLineColor(line.type)} break-words leading-relaxed`}>
                             {line.type === 'input' ? (
-                                <span className="flex items-center gap-2"><ArrowRight className="w-4 h-4 text-green-500" /> <span className="text-cyan-400">~/project</span> {line.content}</span>
+                                <span className="flex items-center gap-2"><ArrowRight className="w-4 h-4 text-terminal-green" /> <span className="text-electric-blue">~/project</span> {line.content}</span>
                             ) : (
                                 <span>{line.content}</span>
                             )}
@@ -99,11 +99,11 @@ const Terminal: React.FC = () => {
                     <div ref={bottomRef} />
                 </div>
 
-                <div className="p-4 bg-gray-900 border-t border-gray-800 flex items-center">
-                    <ArrowRight className="w-4 h-4 text-green-500 mr-2" />
-                    <span className="text-cyan-400 mr-2">~/project</span>
+                <div className="p-4 bg-holodeck border-t border-white/5 flex items-center">
+                    <ArrowRight className="w-4 h-4 text-terminal-green mr-2" />
+                    <span className="text-electric-blue mr-2">~/project</span>
                     {gitState.repoInitialized && (
-                        <span className="text-purple-400 mr-2">
+                        <span className="text-neon-pink mr-2">
                             (main {gitState.files.some(f => f.status === 'modified' || f.status === 'staged') ? '*' : ''})
                         </span>
                     )}
@@ -112,15 +112,15 @@ const Terminal: React.FC = () => {
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
                         onKeyDown={handleKeyDown}
-                        className="flex-1 bg-transparent border-none outline-none text-yellow-400 placeholder-gray-700"
+                        className="flex-1 bg-transparent border-none outline-none text-yellow-400 placeholder-white/20 font-mono"
                         placeholder={completedAllQuests ? "You're free to explore..." : "Follow the quest instructions..."}
                     />
                 </div>
             </div>
 
             {/* Suggested Commands */}
-            <div className="flex flex-wrap gap-2 mb-2 px-2">
-                <span className="text-gray-500 text-xs flex items-center mr-2">💡 快速指令:</span>
+            <div className="flex flex-wrap gap-2 mt-4 px-2">
+                <span className="text-ghost text-xs flex items-center mr-2">💡 快速指令:</span>
                 {suggestions.map((s) => (
                     <button
                         key={s.label}
@@ -129,17 +129,17 @@ const Terminal: React.FC = () => {
                             // Optional: focus input
                             document.querySelector<HTMLInputElement>('input')?.focus();
                         }}
-                        className="text-xs bg-gray-800 hover:bg-gray-700 text-cyan-400 px-2 py-1 rounded border border-gray-700 transition-colors cursor-pointer"
+                        className="text-xs bg-white/5 hover:bg-white/10 text-electric-blue px-2 py-1 rounded border border-white/10 transition-colors cursor-pointer font-mono"
                     >
                         {s.label}
                     </button>
                 ))}
             </div>
 
-            <div className="flex justify-end mt-2">
+            <div className="flex justify-end mt-2 px-2">
                 <button
                     onClick={resetSimulation}
-                    className="text-xs text-gray-500 hover:text-red-400 transition-colors cursor-pointer hover:underline"
+                    className="text-xs text-ghost hover:text-system-red transition-colors cursor-pointer hover:underline"
                 >
                     [Reset Simulation & Quests]
                 </button>
