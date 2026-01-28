@@ -1,1 +1,45 @@
 @import "tailwindcss";
+
+@theme {
+  /* Fonts */
+  --font-display: "Space Grotesque", sans-serif;
+  --font-body: "M PLUS Rounded 1c", sans-serif;
+  --font-mono: "Fira Code", monospace;
+
+  /* Neon Future Palette */
+  --color-deep-void: #0B0C15;
+  --color-holodeck: #151625;
+  --color-cyber-purple: #A855F7;
+  --color-electric-blue: #3B82F6;
+  --color-neon-pink: #EC4899;
+  --color-terminal-green: #10B981;
+  --color-system-red: #EF4444;
+  --color-starlight: #E2E8F0;
+  --color-ghost: #94A3B8;
+}
+
+/* Global Resets */
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-deep-void);
+  color: var(--color-starlight);
+  font-feature-settings: "palt"; /* Improve Japanese kerning if needed, or removing it if causing issues */
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  letter-spacing: -0.025em; /* Tighter tracking for display font */
+}
+
+code, pre, kbd, .font-mono, .terminal-font {
+  font-family: var(--font-mono);
+}
+
+/* Glassmorphism Utilities */
+.glass-panel {
+  @apply bg-holodeck/60 backdrop-blur-md border border-white/10 shadow-xl;
+}
+
+.glass-card {
+  @apply bg-holodeck/40 backdrop-blur-sm border border-white/5 hover:bg-holodeck/60 transition-colors duration-300;
+}
