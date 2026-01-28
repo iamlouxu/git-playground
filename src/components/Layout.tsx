@@ -15,7 +15,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     <nav className="space-x-4 text-sm font-medium flex items-center">
                         <button onClick={() => document.getElementById('tutorials')?.scrollIntoView({ behavior: 'smooth' })} className="text-gray-300 hover:text-white transition-colors cursor-pointer">Tutorials</button>
                         <button onClick={() => document.getElementById('sandbox')?.scrollIntoView({ behavior: 'smooth' })} className="text-gray-300 hover:text-white transition-colors cursor-pointer">Sandbox</button>
-                        <a href="https://git-scm.com/" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-orange-400 transition-colors cursor-pointer">Official Git</a>
+                        <a href="https://git-scm.com/" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors cursor-pointer">Official Git</a>
                     </nav>
                 </div>
             </header>
