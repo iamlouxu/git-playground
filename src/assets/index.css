@@ -2,15 +2,16 @@
 
 @theme {
   /* Fonts */
-  --font-display: "Space Grotesque", sans-serif;
-  --font-body: "M PLUS Rounded 1c", sans-serif;
+  --font-display: "Rajdhani", sans-serif;
+  --font-body: "Space Mono", monospace;
   --font-mono: "Fira Code", monospace;
 
   /* Neon Future Palette */
   --color-deep-void: #0B0C15;
-  --color-holodeck: #151625;
+  --color-holodeck: #131520;
+  --color-git-orange: #F97316;
   --color-cyber-purple: #A855F7;
-  --color-electric-blue: #3B82F6;
+  --color-electric-blue: #60A5FA;
   --color-neon-pink: #EC4899;
   --color-terminal-green: #10B981;
   --color-system-red: #EF4444;
