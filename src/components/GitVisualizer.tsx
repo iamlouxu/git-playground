@@ -4,7 +4,6 @@ import type { GitState } from '../hooks/useGitSim';
 import {
     File,
     FileCheck,
-    ArrowRight,
     Cloud,
     Database,
     Cpu,
