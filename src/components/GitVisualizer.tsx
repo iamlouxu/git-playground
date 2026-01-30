@@ -77,7 +77,7 @@ const GitVisualizer: React.FC<GitVisualizerProps> = ({ gitState }) => {
 
                 <h3 className="text-2xl font-bold text-starlight mb-8 text-center font-display tracking-[0.2em] uppercase flex items-center justify-center gap-4 relative z-10 drop-shadow-[0_0_10px_rgba(236,72,153,0.8)]">
                     <Rocket className="w-6 h-6 text-neon-pink animate-pulse" />
-                    <span>Hyper-Drive Station</span>
+                    <span>超空間中繼站</span>
                     <Rocket className="w-6 h-6 text-neon-pink transform scale-x-[-1] animate-pulse" />
                 </h3>
 
@@ -91,15 +91,15 @@ const GitVisualizer: React.FC<GitVisualizerProps> = ({ gitState }) => {
                         <div className="absolute inset-0 bg-system-red/5 rounded-lg border border-system-red/20 shadow-[0_0_15px_rgba(239,68,68,0.1)] transition-all group-hover:shadow-[0_0_25px_rgba(239,68,68,0.2)]"></div>
                         <div className="relative p-4 h-full flex flex-col">
                             <div className="flex items-center justify-between mb-4 text-system-red font-display tracking-wider border-b border-system-red/30 pb-2">
-                                <span className="flex items-center gap-2"><Cpu className="w-4 h-4" /> ASSEMBLY</span>
-                                <span className="text-[10px] bg-system-red/20 px-1 rounded animate-pulse">LIVE</span>
+                                <span className="flex items-center gap-2"><Cpu className="w-4 h-4" /> 組裝矩陣</span>
+                                <span className="text-[10px] bg-system-red/20 px-1 rounded animate-pulse">連線中</span>
                             </div>
 
                             <div className="flex-1 space-y-2 overflow-y-auto max-h-[250px] scrollbar-hide">
                                 {untracked.length === 0 ? (
                                     <div className="h-full flex flex-col items-center justify-center text-system-red/30 italic font-mono text-sm">
-                                        <div>[NO INPUT DATA]</div>
-                                        <div className="text-[10px] opacity-50 mt-1">Waiting for modifications...</div>
+                                        <div>[無輸入數據]</div>
+                                        <div className="text-[10px] opacity-50 mt-1">等待變更...</div>
                                     </div>
                                 ) : (
                                     untracked.map(f => (
@@ -123,8 +123,8 @@ const GitVisualizer: React.FC<GitVisualizerProps> = ({ gitState }) => {
                         <div className="absolute inset-0 bg-cyber-purple/5 rounded-lg border border-cyber-purple/20 shadow-[0_0_15px_rgba(168,85,247,0.1)] transition-all group-hover:shadow-[0_0_25px_rgba(168,85,247,0.2)]"></div>
                         <div className="relative p-4 h-full flex flex-col items-center">
                             <div className="w-full flex items-center justify-between mb-4 text-cyber-purple font-display tracking-wider border-b border-cyber-purple/30 pb-2">
-                                <span className="flex items-center gap-2"><Zap className="w-4 h-4" /> FUSION CORE</span>
-                                <span className="text-[10px] bg-cyber-purple/20 px-1 rounded">{staged.length} UNITS</span>
+                                <span className="flex items-center gap-2"><Zap className="w-4 h-4" /> 融合核心</span>
+                                <span className="text-[10px] bg-cyber-purple/20 px-1 rounded">{staged.length} 單位</span>
                             </div>
 
                             {/* Rotating Core Animation Background */}
@@ -139,7 +139,7 @@ const GitVisualizer: React.FC<GitVisualizerProps> = ({ gitState }) => {
                             <div className="w-full flex-1 space-y-2 overflow-y-auto max-h-[250px] scrollbar-hide relative z-10">
                                 {staged.length === 0 ? (
                                     <div className="h-full flex flex-col items-center justify-center text-cyber-purple/30 italic font-mono text-sm">
-                                        <div>[CORE IDLE]</div>
+                                        <div>[核心待機]</div>
                                     </div>
                                 ) : (
                                     staged.map(f => (
@@ -162,7 +162,7 @@ const GitVisualizer: React.FC<GitVisualizerProps> = ({ gitState }) => {
                         <div className="absolute inset-0 bg-electric-blue/5 rounded-lg border border-electric-blue/20 shadow-[0_0_15px_rgba(59,130,246,0.1)] transition-all group-hover:shadow-[0_0_25px_rgba(59,130,246,0.2)]"></div>
                         <div className="relative p-4 h-full flex flex-col">
                             <div className="flex items-center justify-between mb-4 text-electric-blue font-display tracking-wider border-b border-electric-blue/30 pb-2">
-                                <span className="flex items-center gap-2"><Database className="w-4 h-4" /> GALACTIC MAP</span>
+                                <span className="flex items-center gap-2"><Database className="w-4 h-4" /> 星際地圖</span>
                                 <span className="text-[10px] bg-electric-blue/20 px-1 rounded">HEAD: {committed.slice(-1)[0]?.id.substring(0, 4) || 'NULL'}</span>
                             </div>
 
@@ -171,21 +171,24 @@ const GitVisualizer: React.FC<GitVisualizerProps> = ({ gitState }) => {
                                 <div className="absolute inset-0 bg-[radial-gradient(white_1px,transparent_1px)] bg-[size:20px_20px] opacity-20"></div>
 
                                 {!gitState.repoInitialized ? (
-                                    <div className="flex items-center justify-center h-full text-electric-blue/30 font-mono text-sm">[UNCHARTED]</div>
+                                    <div className="flex items-center justify-center h-full text-electric-blue/30 font-mono text-sm">[未探索區域]</div>
                                 ) : committed.length === 0 ? (
-                                    <div className="flex items-center justify-center h-full text-electric-blue/30 font-mono text-sm">[NO PLANETS DETECTED]</div>
+                                    <div className="flex items-center justify-center h-full text-electric-blue/30 font-mono text-sm">[未偵測到星球]</div>
                                 ) : (
-                                    <div className="absolute inset-0 overflow-y-auto scrollbar-hide p-4 space-y-3">
-                                        <div className="absolute left-[27px] top-6 bottom-6 w-0.5 bg-gradient-to-b from-electric-blue/50 via-electric-blue/20 to-transparent pointer-events-none"></div>
+                                    <div className="absolute inset-0 overflow-y-auto scrollbar-hide p-4 space-y-3 relative">
+                                        {/* Timeline Line (Centered behind nodes) */}
+                                        <div className="absolute left-[36px] top-6 bottom-4 w-[2px] bg-electric-blue/30 pointer-events-none z-0"></div>
                                         {[...committed].reverse().map((commit, i) => {
                                             const isHead = i === 0;
                                             return (
-                                                <div key={commit.id} className="relative flex items-center gap-3 group/item">
-                                                    {/* Timeline Node */}
-                                                    <div className={`relative z-10 w-3 h-3 rounded-full border-2 shrink-0 transition-all duration-300 
-                                                        ${commit.branch === 'main' ? 'border-electric-blue bg-[#0B0C15]' : 'border-neon-pink bg-[#0B0C15]'}
-                                                        ${isHead ? 'w-4 h-4 shadow-[0_0_10px_rgba(59,130,246,0.8)] bg-electric-blue' : 'group-hover/item:scale-125'}
-                                                    `}></div>
+                                                <div key={commit.id} className="relative flex items-center gap-3 group/item z-10">
+                                                    {/* Timeline Node Container - Ensuring centering */}
+                                                    <div className="w-10 flex justify-center shrink-0">
+                                                        <div className={`relative z-10 w-3 h-3 rounded-full border-2 shrink-0 transition-all duration-300 
+                                                            ${commit.branch === 'main' ? 'border-electric-blue bg-[#0B0C15]' : 'border-neon-pink bg-[#0B0C15]'}
+                                                            ${isHead ? 'w-4 h-4 shadow-[0_0_10px_rgba(59,130,246,0.8)] bg-electric-blue' : 'group-hover/item:scale-125'}
+                                                        `}></div>
+                                                    </div>
 
                                                     {/* Card */}
                                                     <div
@@ -225,8 +228,8 @@ const GitVisualizer: React.FC<GitVisualizerProps> = ({ gitState }) => {
                         <div className="absolute inset-0 bg-terminal-green/5 rounded-lg border border-terminal-green/20 shadow-[0_0_15px_rgba(16,185,129,0.1)] transition-all group-hover:shadow-[0_0_25px_rgba(16,185,129,0.2)]"></div>
                         <div className="relative p-4 h-full flex flex-col">
                             <div className="flex items-center justify-between mb-4 text-terminal-green font-display tracking-wider border-b border-terminal-green/30 pb-2">
-                                <span className="flex items-center gap-2"><Cloud className="w-4 h-4" /> VOID GATEWAY</span>
-                                <span className="text-[10px] bg-terminal-green/20 px-1 rounded">ORIGIN</span>
+                                <span className="flex items-center gap-2"><Cloud className="w-4 h-4" /> 虛空傳送門</span>
+                                <span className="text-[10px] bg-terminal-green/20 px-1 rounded">遠端</span>
                             </div>
 
                             <div className="flex-1 flex flex-col items-center relative">
@@ -245,13 +248,13 @@ const GitVisualizer: React.FC<GitVisualizerProps> = ({ gitState }) => {
                                 {/* Status Text */}
                                 {committed.length > remote.length ? (
                                     <div className="text-yellow-500 font-mono text-center text-xs animate-pulse font-bold">
-                                        ⚠ SYNC REQUIRED<br />
-                                        <span className="text-[10px] opacity-80">{committed.length - remote.length} pending packet</span>
+                                        ⚠ 需要同步<br />
+                                        <span className="text-[10px] opacity-80">{committed.length - remote.length} 個待傳數據包</span>
                                     </div>
                                 ) : (
                                     <div className="text-terminal-green font-mono text-center text-xs">
-                                        ● LINK STABLE<br />
-                                        <span className="text-[10px] opacity-50">All systems nominal</span>
+                                        ● 連線穩定<br />
+                                        <span className="text-[10px] opacity-50">系統運作正常</span>
                                     </div>
                                 )}
 

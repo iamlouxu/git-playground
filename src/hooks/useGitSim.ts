@@ -302,7 +302,7 @@ export const useGitSim = () => {
 
                             const mergeCommit: Commit = {
                                 id: Math.random().toString(16).substr(2, 7),
-                                message: "Merge branch 'feature'",
+                                message: "合併分支 'feature'",
                                 branch: 'main',
                                 parentId: nextGitState.commitHistory[nextGitState.commitHistory.length - 1].id,
                                 timestamp: Date.now()
@@ -384,7 +384,7 @@ export const useGitSim = () => {
             if (gitState.remoteCommits.length <= gitState.commitHistory.length) {
                 const newCommit: Commit = {
                     id: Math.random().toString(16).substr(2, 7),
-                    message: "Teammate's update",
+                    message: "隊友更新",
                     branch: 'main',
                     parentId: gitState.remoteCommits[gitState.remoteCommits.length - 1]?.id || null,
                     timestamp: Date.now()
