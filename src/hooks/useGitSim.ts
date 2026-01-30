@@ -101,6 +101,13 @@ const QUESTS: Quest[] = [
         description: '再次合併 Feature 分支會有衝突。執行 git merge feature，解決衝突後提交。',
         check: (state, _) => state.files.some(f => f.status === 'committed' && f.name === 'style.css') && state.commitHistory.some(c => c.message.includes('Merge')),
         completed: false
+    },
+    {
+        id: 'push-quest',
+        title: '任務 9：同步數據 (Push)',
+        description: '你的本地進度領先遠端了！執行 git push 將變更同步到遠端。',
+        check: (state, _) => state.commitHistory.length > 0 && state.commitHistory.length === state.remoteCommits.length,
+        completed: false
     }
 ];
 
