@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useGitSim } from '../hooks/useGitSim';
 import type { TerminalLine } from '../hooks/useGitSim';
+import BranchControlPanel from './BranchControlPanel';
 import GitVisualizer from './GitVisualizer';
 import { Terminal as TerminalIcon, CheckCircle2, ArrowRight } from 'lucide-react';
 
@@ -46,6 +47,9 @@ const Terminal: React.FC = () => {
 
     return (
         <div className="w-full max-w-6xl mx-auto my-8 font-mono text-sm sm:text-base">
+
+            {/* Time Jump Console */}
+            <BranchControlPanel gitState={gitState} onExecute={executeCommand} />
 
             {/* Visualizer Section */}
             <GitVisualizer gitState={gitState} />
@@ -104,7 +108,7 @@ const Terminal: React.FC = () => {
                     <span className="text-electric-blue mr-2">~/project</span>
                     {gitState.repoInitialized && (
                         <span className="text-neon-pink mr-2">
-                            (main {gitState.files.some(f => f.status === 'modified' || f.status === 'staged') ? '*' : ''})
+                            ({gitState.currentBranch || 'main'} {gitState.files.some(f => f.status === 'modified' || f.status === 'staged') ? '*' : ''})
                         </span>
                     )}
                     <input
