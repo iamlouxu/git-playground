@@ -29,6 +29,8 @@ export type GitState = {
     files: SimFile[];
     commitHistory: Commit[];
     remoteCommits: Commit[];
+    currentBranch: string;
+    branches: string[];
 };
 
 export type Quest = {
@@ -99,7 +101,7 @@ const QUESTS: Quest[] = [
         id: 'conflict-quest',
         title: '任務 8：解決衝突 (Conflict)',
         description: '再次合併 Feature 分支會有衝突。執行 git merge feature，解決衝突後提交。',
-        check: (state, _) => state.files.some(f => f.status === 'committed' && f.name === 'style.css') && state.commitHistory.some(c => c.message.includes('Merge')),
+        check: (state, _) => !state.files.some(f => f.status === 'conflicted') && state.files.find(f => f.name === 'style.css')?.status === 'committed',
         completed: false
     },
     {
@@ -112,7 +114,6 @@ const QUESTS: Quest[] = [
 ];
 
 export const useGitSim = () => {
-    // ... existing state ...
     const [history, setHistory] = useState<TerminalLine[]>([
         { id: 'init', type: 'info', content: 'Welcome to Git Playground! Type "help" for valid commands.' },
     ]);
@@ -122,6 +123,8 @@ export const useGitSim = () => {
         files: INITIAL_FILES,
         commitHistory: [],
         remoteCommits: [],
+        currentBranch: 'main',
+        branches: ['main'],
     });
 
     const [currentQuestIndex, setCurrentQuestIndex] = useState(0);
@@ -174,7 +177,7 @@ export const useGitSim = () => {
                     if (!gitState.repoInitialized) {
                         addToHistory('error', 'fatal: not a git repository');
                     } else {
-                        addToHistory('output', 'On branch main');
+                        addToHistory('output', `On branch ${gitState.currentBranch || 'main'}`);
                         const untracked = gitState.files.filter(f => f.status === 'untracked');
                         const staged = gitState.files.filter(f => f.status === 'staged');
                         const modified = gitState.files.filter(f => f.status === 'modified');
@@ -241,19 +244,19 @@ export const useGitSim = () => {
                                 addToHistory('error', 'fatal: You have not concluded your merge (MERGE_HEAD exists).');
                                 addToHistory('error', '  (fix conflicts and then run "git commit")');
                             } else if (!hasStaged) {
-                                addToHistory('output', 'On branch main');
+                                addToHistory('output', `On branch ${gitState.currentBranch || 'main'}`);
                                 addToHistory('output', 'nothing to commit, working tree clean');
                             } else {
                                 nextGitState.files = nextGitState.files.map(f => f.status === 'staged' ? { ...f, status: 'committed' } : f);
                                 const newCommit: Commit = {
                                     id: Math.random().toString(16).substr(2, 7),
                                     message: message,
-                                    branch: 'main',
+                                    branch: gitState.currentBranch || 'main',
                                     parentId: nextGitState.commitHistory.length > 0 ? nextGitState.commitHistory[nextGitState.commitHistory.length - 1].id : null,
                                     timestamp: Date.now()
                                 };
                                 nextGitState.commitHistory = [...nextGitState.commitHistory, newCommit];
-                                addToHistory('output', `[main ${newCommit.id}] ${message}`);
+                                addToHistory('output', `[${gitState.currentBranch || 'main'} ${newCommit.id}] ${message}`);
                                 addToHistory('output', ` ${gitState.files.filter(f => f.status === 'staged').length} files changed`);
                             }
                         }
@@ -267,9 +270,8 @@ export const useGitSim = () => {
                         addToHistory('error', `merge: ${args[0]} - not something we can merge (try 'feature')`);
                     } else {
                         // CONFLICT SCENARIO CHECK (Scripted for educational purpose)
-                        // If we are in a state where a conflict is expected (e.g., both branches touched 'style.css')
-                        const currentQuest = QUESTS[currentQuestIndex]; // Get current quest to check for conflict-quest
-                        const hasConflict = currentQuest && currentQuest.id === 'conflict-quest'; // We will add this quest ID later
+                        const currentQuest = QUESTS[currentQuestIndex];
+                        const hasConflict = currentQuest && currentQuest.id === 'conflict-quest';
 
                         if (hasConflict) {
                             addToHistory('info', 'Auto-merging style.css');
@@ -295,7 +297,6 @@ export const useGitSim = () => {
                             addToHistory('success', ' 1 file changed, 20 insertions(+)');
                             addToHistory('success', ' create mode 100644 feature.js');
 
-                            // Check if feature.js already exists to avoid duplication if running multiple times
                             if (!nextGitState.files.find(f => f.name === 'feature.js')) {
                                 nextGitState.files = [...nextGitState.files, { name: 'feature.js', status: 'committed', content: 'console.log("Feature A implemented");' }];
                             }
@@ -316,7 +317,6 @@ export const useGitSim = () => {
                     if (!gitState.repoInitialized) {
                         addToHistory('error', 'fatal: not a git repository (or any of the parent directories): .git');
                     } else {
-                        // Simulate pulling from remote
                         if (gitState.remoteCommits.length > gitState.commitHistory.length) {
                             const newCommits = gitState.remoteCommits.slice(gitState.commitHistory.length);
                             nextGitState.commitHistory = [...gitState.commitHistory, ...newCommits];
@@ -341,8 +341,60 @@ export const useGitSim = () => {
                             addToHistory('output', 'Writing objects: 100% (3/3), 280 bytes | 280.00 KiB/s, done.');
                             addToHistory('output', 'Total 3 (delta 0), reused 0 (delta 0)');
                             addToHistory('success', 'To https://github.com/user/project.git');
-                            addToHistory('success', '   98fa2..34ac2  main -> main');
+                            addToHistory('success', `   98fa2..34ac2  ${gitState.currentBranch} -> ${gitState.currentBranch}`);
                             nextGitState.remoteCommits = [...gitState.commitHistory];
+                        }
+                    }
+                    break;
+
+                case 'branch':
+                    if (!gitState.repoInitialized) {
+                        addToHistory('error', 'fatal: not a git repository');
+                    } else if (args.length === 0) {
+                        // List branches
+                        gitState.branches.forEach(b => {
+                            if (b === gitState.currentBranch) {
+                                addToHistory('success', `* ${b}`);
+                            } else {
+                                addToHistory('output', `  ${b}`);
+                            }
+                        });
+                    } else {
+                        // Create branch
+                        const newBranch = args[0];
+                        if (gitState.branches.includes(newBranch)) {
+                            addToHistory('error', `fatal: A branch named '${newBranch}' already exists.`);
+                        } else {
+                            nextGitState.branches = [...nextGitState.branches, newBranch];
+                            addToHistory('output', `Created branch ${newBranch}`);
+                        }
+                    }
+                    break;
+
+                case 'checkout':
+                    if (!gitState.repoInitialized) {
+                        addToHistory('error', 'fatal: not a git repository');
+                    } else if (args.length === 0) {
+                        addToHistory('error', 'fatal: you need to specify a branch to checkout');
+                    } else {
+                        const isNew = args[0] === '-b';
+                        const targetBranch = isNew ? args[1] : args[0];
+
+                        if (isNew) {
+                            if (gitState.branches.includes(targetBranch)) {
+                                addToHistory('error', `fatal: A branch named '${targetBranch}' already exists.`);
+                            } else {
+                                nextGitState.branches = [...nextGitState.branches, targetBranch];
+                                nextGitState.currentBranch = targetBranch;
+                                addToHistory('success', `Switched to a new branch '${targetBranch}'`);
+                            }
+                        } else {
+                            if (!gitState.branches.includes(targetBranch)) {
+                                addToHistory('error', `error: pathspec '${targetBranch}' did not match any file(s) known to git`);
+                            } else {
+                                nextGitState.currentBranch = targetBranch;
+                                addToHistory('success', `Switched to branch '${targetBranch}'`);
+                            }
                         }
                     }
                     break;
@@ -353,6 +405,8 @@ export const useGitSim = () => {
                     addToHistory('info', '  git status');
                     addToHistory('info', '  git add <file> (or .)');
                     addToHistory('info', '  git commit -m "message"');
+                    addToHistory('info', '  git branch [name]');
+                    addToHistory('info', '  git checkout [-b] <branch>');
                     addToHistory('info', '  git merge <branch>');
                     addToHistory('info', '  git push');
                     break;
@@ -361,7 +415,6 @@ export const useGitSim = () => {
 
         setGitState(nextGitState);
 
-        // Quest Check - Use nextGitState!
         if (currentQuestIndex < QUESTS.length) {
             const quest = QUESTS[currentQuestIndex];
             if (quest.check(nextGitState, cmd.trim())) {
@@ -380,7 +433,6 @@ export const useGitSim = () => {
     useEffect(() => {
         const quest = QUESTS[currentQuestIndex];
         if (quest && quest.id === 'remote-quest') {
-            // Simulate remote being ahead
             if (gitState.remoteCommits.length <= gitState.commitHistory.length) {
                 const newCommit: Commit = {
                     id: Math.random().toString(16).substr(2, 7),
@@ -405,7 +457,9 @@ export const useGitSim = () => {
             repoInitialized: false,
             files: INITIAL_FILES,
             commitHistory: [],
-            remoteCommits: []
+            remoteCommits: [],
+            currentBranch: 'main',
+            branches: ['main']
         });
         setHistory([
             { id: 'reset', type: 'info', content: 'Simulation reset.' },
