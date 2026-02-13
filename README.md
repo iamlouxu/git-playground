@@ -37,7 +37,7 @@
 
 本專案採用現代化的前端技術構建：
 
--   **核心框架:** React 19 + TypeScript
+-   **前端開發:** React 19 + TypeScript
 -   **建置工具:** Vite
 -   **樣式系統:** Tailwind CSS v4 (最新版)
 -   **動畫效果:** 
