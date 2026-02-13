@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
-import type { GitState } from '../../hooks/useGitSim';
+import type { GitState } from '../../types/git';
 import {
     File,
     FileCheck,
@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import FileViewerModal from '../ui/FileViewerModal';
 
-interface GitVisualizerProps {
+type GitVisualizerProps = {
     gitState: GitState;
 }
 

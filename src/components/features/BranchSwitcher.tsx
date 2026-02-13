@@ -1,6 +1,6 @@
 import React from 'react';
 import { GitBranch, Radio, History, ArrowRight, Lock, Power } from 'lucide-react';
-import type { GitState } from '../../hooks/useGitSim';
+import type { GitState } from '../../types/git';
 
 interface BranchControlPanelProps {
     gitState: GitState;

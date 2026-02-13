@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useGitSim } from '../../hooks/useGitSim';
-import type { TerminalLine } from '../../hooks/useGitSim';
+import type { TerminalLine } from '../../types/git';
 import BranchSwitcher from './BranchSwitcher';
 import GitStateVisualizer from './GitStateVisualizer';
 import { Terminal as TerminalIcon, CheckCircle2, ArrowRight } from 'lucide-react';
