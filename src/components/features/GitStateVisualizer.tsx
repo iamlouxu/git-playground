@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
-import type { GitState } from '../hooks/useGitSim';
+import type { GitState } from '../../types/git';
 import {
     File,
     FileCheck,
@@ -10,13 +10,13 @@ import {
     Zap,
     Rocket
 } from 'lucide-react';
-import FileContentModal from './FileContentModal';
+import FileViewerModal from '../ui/FileViewerModal';
 
-interface GitVisualizerProps {
+type GitVisualizerProps = {
     gitState: GitState;
 }
 
-const GitVisualizer: React.FC<GitVisualizerProps> = ({ gitState }) => {
+const GitStateVisualizer = ({ gitState }: GitVisualizerProps) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [tilt, setTilt] = useState({ x: 0, y: 0 });
 
@@ -273,7 +273,7 @@ const GitVisualizer: React.FC<GitVisualizerProps> = ({ gitState }) => {
 
             </div>
             {selectedFile && (
-                <FileContentModal
+                <FileViewerModal
                     isOpen={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
                     fileName={selectedFile.name}
@@ -285,4 +285,4 @@ const GitVisualizer: React.FC<GitVisualizerProps> = ({ gitState }) => {
     );
 };
 
-export default GitVisualizer;
+export default GitStateVisualizer;

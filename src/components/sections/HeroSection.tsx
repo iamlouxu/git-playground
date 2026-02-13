@@ -1,8 +1,8 @@
 
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 
-const Hero: React.FC = () => {
+const HeroSection = () => {
     const titleRef = useRef<HTMLHeadingElement>(null);
     const subtitleRef = useRef<HTMLParagraphElement>(null);
 
@@ -41,4 +41,4 @@ const Hero: React.FC = () => {
     );
 };
 
-export default Hero;
+export default HeroSection;

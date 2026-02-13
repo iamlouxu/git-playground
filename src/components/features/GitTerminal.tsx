@@ -1,12 +1,12 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { useGitSim } from '../hooks/useGitSim';
-import type { TerminalLine } from '../hooks/useGitSim';
-import BranchControlPanel from './BranchControlPanel';
-import GitVisualizer from './GitVisualizer';
+import { useGitSim } from '../../hooks/useGitSim';
+import type { TerminalLine } from '../../types/git';
+import BranchSwitcher from './BranchSwitcher';
+import GitStateVisualizer from './GitStateVisualizer';
 import { Terminal as TerminalIcon, CheckCircle2, ArrowRight } from 'lucide-react';
 
-const Terminal: React.FC = () => {
+const GitTerminal = () => {
     const { history, executeCommand, gitState, resetSimulation, currentQuest, completedAllQuests } = useGitSim();
     const [inputValue, setInputValue] = useState('');
     const bottomRef = useRef<HTMLDivElement>(null);
@@ -49,10 +49,10 @@ const Terminal: React.FC = () => {
         <div className="w-full max-w-6xl mx-auto my-8 font-mono text-sm sm:text-base">
 
             {/* Time Jump Console */}
-            <BranchControlPanel gitState={gitState} onExecute={executeCommand} />
+            <BranchSwitcher gitState={gitState} onExecute={executeCommand} />
 
             {/* Visualizer Section */}
-            <GitVisualizer gitState={gitState} />
+            <GitStateVisualizer gitState={gitState} />
 
             {/* Quest Header */}
             <div className="bg-gradient-to-r from-cyber-purple/20 to-electric-blue/20 p-4 rounded-t-lg border-t border-l border-r border-white/10 flex justify-between items-center backdrop-blur">
@@ -152,4 +152,4 @@ const Terminal: React.FC = () => {
     );
 };
 
-export default Terminal;
+export default GitTerminal;

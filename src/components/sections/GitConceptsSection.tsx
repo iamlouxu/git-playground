@@ -1,19 +1,19 @@
 
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import gitRpgSave from '../assets/git_rpg_save_1769052499382.png';
-import gitCollaboration from '../assets/git_collaboration_1769052517500.png';
-import gitStagesFlow from '../assets/git_stages_flow_1769052534770.png';
-import gitFlowNeon from '../assets/git_flow_neon.png';
+import gitRpgSave from '../../assets/git_rpg_save_1769052499382.png';
+import gitCollaboration from '../../assets/git_collaboration_1769052517500.png';
+import gitStagesFlow from '../../assets/git_stages_flow_1769052534770.png';
+import gitFlowNeon from '../../assets/git_flow_neon.png';
 
-import gitBranchSciFi from '../assets/git_branch_sci_fi.png';
-import gitMergeSciFi from '../assets/git_merge_sci_fi.png';
-import gitCheckoutSciFi from '../assets/git_checkout_sci_fi.png';
+import gitBranchSciFi from '../../assets/git_branch_sci_fi.png';
+import gitMergeSciFi from '../../assets/git_merge_sci_fi.png';
+import gitCheckoutSciFi from '../../assets/git_checkout_sci_fi.png';
 
 gsap.registerPlugin(ScrollTrigger);
 
-interface ExplainerSectionProps {
+type ExplainerSectionProps = {
     title: string;
     description: React.ReactNode;
     image: string;
@@ -22,14 +22,14 @@ interface ExplainerSectionProps {
     highlightColor?: string;
 }
 
-const ExplainerSection: React.FC<ExplainerSectionProps> = ({
+const ExplainerSection = ({
     title,
     description,
     image,
     imageAlt,
     imagePosition = 'right',
     highlightColor = 'text-electric-blue'
-}) => {
+}: ExplainerSectionProps) => {
     const glowColorMap: Record<string, string> = {
         'text-electric-blue': 'from-electric-blue',
         'text-neon-pink': 'from-neon-pink',
@@ -61,7 +61,7 @@ const ExplainerSection: React.FC<ExplainerSectionProps> = ({
     );
 };
 
-const Explainer: React.FC = () => {
+const GitConceptsSection = () => {
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -319,4 +319,4 @@ const Explainer: React.FC = () => {
     );
 };
 
-export default Explainer;
+export default GitConceptsSection;
