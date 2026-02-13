@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import gitRpgSave from '../../assets/git_rpg_save_1769052499382.png';
@@ -13,7 +13,7 @@ import gitCheckoutSciFi from '../../assets/git_checkout_sci_fi.png';
 
 gsap.registerPlugin(ScrollTrigger);
 
-interface ExplainerSectionProps {
+type ExplainerSectionProps = {
     title: string;
     description: React.ReactNode;
     image: string;
@@ -22,14 +22,14 @@ interface ExplainerSectionProps {
     highlightColor?: string;
 }
 
-const ExplainerSection: React.FC<ExplainerSectionProps> = ({
+const ExplainerSection = ({
     title,
     description,
     image,
     imageAlt,
     imagePosition = 'right',
     highlightColor = 'text-electric-blue'
-}) => {
+}: ExplainerSectionProps) => {
     const glowColorMap: Record<string, string> = {
         'text-electric-blue': 'from-electric-blue',
         'text-neon-pink': 'from-neon-pink',
@@ -61,7 +61,7 @@ const ExplainerSection: React.FC<ExplainerSectionProps> = ({
     );
 };
 
-const GitConceptsSection: React.FC = () => {
+const GitConceptsSection = () => {
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {

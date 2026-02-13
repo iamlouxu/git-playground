@@ -16,7 +16,7 @@ type GitVisualizerProps = {
     gitState: GitState;
 }
 
-const GitStateVisualizer: React.FC<GitVisualizerProps> = ({ gitState }) => {
+const GitStateVisualizer = ({ gitState }: GitVisualizerProps) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [tilt, setTilt] = useState({ x: 0, y: 0 });
 

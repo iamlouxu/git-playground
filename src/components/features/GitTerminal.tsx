@@ -6,7 +6,7 @@ import BranchSwitcher from './BranchSwitcher';
 import GitStateVisualizer from './GitStateVisualizer';
 import { Terminal as TerminalIcon, CheckCircle2, ArrowRight } from 'lucide-react';
 
-const GitTerminal: React.FC = () => {
+const GitTerminal = () => {
     const { history, executeCommand, gitState, resetSimulation, currentQuest, completedAllQuests } = useGitSim();
     const [inputValue, setInputValue] = useState('');
     const bottomRef = useRef<HTMLDivElement>(null);

@@ -1,8 +1,8 @@
 
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { X, FileText } from 'lucide-react';
 
-interface FileContentModalProps {
+type FileContentModalProps = {
     isOpen: boolean;
     onClose: () => void;
     fileName: string;
@@ -10,7 +10,7 @@ interface FileContentModalProps {
     status: string; // 'untracked' | 'modified' | 'staged' | 'committed'
 }
 
-const FileViewerModal: React.FC<FileContentModalProps> = ({ isOpen, onClose, fileName, content, status }) => {
+const FileViewerModal = ({ isOpen, onClose, fileName, content, status }: FileContentModalProps) => {
     if (!isOpen) return null;
 
     // Close on Escape key
