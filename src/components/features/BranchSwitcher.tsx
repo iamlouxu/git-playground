@@ -1,13 +1,12 @@
-import React from 'react';
 import { GitBranch, Radio, History, ArrowRight, Lock, Power } from 'lucide-react';
-import type { GitState } from '../hooks/useGitSim';
+import type { GitState } from '../../types/git';
 
-interface BranchControlPanelProps {
+type BranchControlPanelProps = {
     gitState: GitState;
     onExecute: (cmd: string) => void;
 }
 
-const BranchControlPanel: React.FC<BranchControlPanelProps> = ({ gitState, onExecute }) => {
+const BranchSwitcher = ({ gitState, onExecute }: BranchControlPanelProps) => {
     // Determine branches to display. If initialized, use state branches; otherwise empty or showing offline status
     const availableBranches = gitState.repoInitialized ? gitState.branches : [];
 
@@ -106,4 +105,4 @@ const BranchControlPanel: React.FC<BranchControlPanelProps> = ({ gitState, onExe
     );
 };
 
-export default BranchControlPanel;
+export default BranchSwitcher;

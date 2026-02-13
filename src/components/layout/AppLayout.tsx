@@ -3,11 +3,11 @@ import React from 'react';
 import type { ReactNode } from 'react';
 import { Menu, X } from 'lucide-react';
 
-interface LayoutProps {
+type LayoutProps = {
     children: ReactNode;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const AppLayout = ({ children }: LayoutProps) => {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
     return (
@@ -80,4 +80,4 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     );
 };
 
-export default Layout;
+export default AppLayout;
