@@ -1,3 +1,5 @@
+![Git Playground Banner](public/og-image.png)
+
 # Git Playground - 互動式 Git 學習實驗室
 
 > **"這不只是一個指令練習工具，而是一場理解團隊協作的時空冒險。"**
