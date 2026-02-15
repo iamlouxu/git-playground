@@ -46,7 +46,7 @@
 
 -   **前端開發:** React 19 + TypeScript
 -   **建置工具:** Vite
--   **樣式系統:** Tailwind CSS v4 (最新版)
+-   **樣式系統:** Tailwind CSS v4
 -   **動畫效果:** 
     -   GSAP (GreenSock) for 複雜的時間軸動畫與 ScrollTrigger
     -   CSS 3D Transforms (Tilt Effects)
